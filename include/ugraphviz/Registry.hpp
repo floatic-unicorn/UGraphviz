@@ -1,10 +1,11 @@
-#pragma once
+#ifndef UGRAPHVIZ__REGISTRY_HPP_
+#define UGRAPHVIZ__REGISTRY_HPP_
 
 #include <map>
 #include <string>
 #include <vector>
 
-namespace Ubpa::UGraphviz {
+namespace ugraphviz {
 	class Registry {
 	public:
 		Registry() = default;
@@ -38,24 +39,25 @@ namespace Ubpa::UGraphviz {
 		const ElemAttrMap& GetEdgeAttrs() const noexcept { return edgeAttrs; }
 		const EdgePortMap& GetEdgePorts() const noexcept { return edgePorts; }
 
-		bool IsRegisteredNode(std::string_view ID) const;
+		bool IsRegisteredNode(std::string ID) const;
 		bool IsRegisteredEdge(std::size_t lhs, std::size_t rhs) const;
-		bool IsRegisteredEdge(std::string_view lhsID, std::string_view rhsID) const;
-		
-		std::size_t GetNodeIndex(std::string_view ID) const;
+		bool IsRegisteredEdge(std::string lhsID, std::string rhsID) const;
+
+		std::size_t GetNodeIndex(std::string ID) const;
 		std::pair<DstNodeEdgeIdxMap::const_iterator, DstNodeEdgeIdxMap::const_iterator>
-		GetEdgeIndexRange(std::string_view lhsID, std::string_view rhsID) const;
+		GetEdgeIndexRange(std::string lhsID, std::string rhsID) const;
 
 		std::size_t RegisterNode(std::string ID);
 		std::size_t RegisterEdge(std::size_t lhs, std::size_t rhs);
 
 		Registry& RegisterNodeAttr(std::size_t nodeIndex, std::string key, std::string value);
 		Registry& RegisterEdgeAttr(std::size_t edgeIndex, std::string key, std::string value);
-
 		Registry& RegisterEdgePort(std::size_t edgeIndex, Port srcPort, Port dstPort);
 
-		Registry& UnregisterNodeAttr(std::size_t nodeIndex, std::string_view key);
-		Registry& UnregisterEdgeAttr(std::size_t edgeIndex, std::string_view key);
+		Registry& UpdateNodeAttr(std::size_t nodeIndex, std::string key, std::string value);
+
+		Registry& UnregisterNodeAttr(std::size_t nodeIndex, std::string key);
+		Registry& UnregisterEdgeAttr(std::size_t edgeIndex, std::string key);
 		Registry& UnregisterEdgePort(std::size_t edgeIndex);
 
 	private:
@@ -74,4 +76,6 @@ namespace Ubpa::UGraphviz {
 		ElemAttrMap edgeAttrs;
 		std::map<size_t, std::pair<Port, Port>> edgePorts;
 	};
-}
+}  // ugraphviz
+
+#endif  // UGRAPHVIZ__REGISTRY_HPP_

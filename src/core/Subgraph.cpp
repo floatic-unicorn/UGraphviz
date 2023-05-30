@@ -1,19 +1,19 @@
-#include <UGraphviz/Subgraph.hpp>
+#include <ugraphviz/Subgraph.hpp>
 
-#include <UGraphviz/Registry.hpp>
+#include <ugraphviz/Registry.hpp>
 
 #include <sstream>
 
 #include <cassert>
 
-using namespace Ubpa::UGraphviz;
+namespace ugraphviz {
 
 Subgraph::~Subgraph() {
 	for (auto subgraph : subgraphs)
 		delete subgraph;
 }
 
-Subgraph& Subgraph::GetSubgraph(std::string_view subgraphID) {
+Subgraph& Subgraph::GetSubgraph(std::string subgraphID) {
 	return *subgraphs[subgraphID2idx.find(subgraphID)->second];
 }
 
@@ -30,17 +30,17 @@ Subgraph& Subgraph::RegisterGraphEdgeAttr(std::string key, std::string value) {
 	return *this;
 }
 
-Subgraph& Subgraph::UnregisterGraphAttr(std::string_view key) {
+Subgraph& Subgraph::UnregisterGraphAttr(std::string key) {
 	graphAttrs.erase(graphAttrs.find(key));
 	return *this;
 }
 
-Subgraph& Subgraph::UnregisterGraphNodeAttr(std::string_view key) {
+Subgraph& Subgraph::UnregisterGraphNodeAttr(std::string key) {
 	graphNodeAttrs.erase(graphNodeAttrs.find(key));
 	return *this;
 }
 
-Subgraph& Subgraph::UnregisterGraphEdgeAttr(std::string_view key) {
+Subgraph& Subgraph::UnregisterGraphEdgeAttr(std::string key) {
 	graphEdgeAttrs.erase(graphEdgeAttrs.find(key));
 	return *this;
 }
@@ -98,7 +98,7 @@ std::string Subgraph::Dump(bool isSub, bool isDigraph, std::size_t indent) const
 
 	std::string eop = isDigraph ? "->" : "--";
 
-	auto qoute = [](std::string_view id) {
+	auto qoute = [](std::string id) {
 		return "\"" + std::string(id) + "\"";
 	};
 
@@ -113,7 +113,7 @@ std::string Subgraph::Dump(bool isSub, bool isDigraph, std::size_t indent) const
 		std::string str;
 
 		str += qoute(nodeIDs[lhs]);
-		if (edgePorts.contains(idx)) {
+		if (edgePorts.find(idx) != edgePorts.end()) {
 			const auto& port = edgePorts.at(idx);
 			if (!port.first.ID.empty())
 				str += ":" + qoute(port.first.ID);
@@ -125,7 +125,7 @@ std::string Subgraph::Dump(bool isSub, bool isDigraph, std::size_t indent) const
 		str += " " + eop + " ";
 
 		str += qoute(nodeIDs[rhs]);
-		if (edgePorts.contains(idx)) {
+		if (edgePorts.find(idx) != edgePorts.end()) {
 			const auto& port = edgePorts.at(idx);
 			if (!port.second.ID.empty())
 				str += ":" + qoute(port.second.ID);
@@ -150,7 +150,7 @@ std::string Subgraph::Dump(bool isSub, bool isDigraph, std::size_t indent) const
 
 	indent++;
 
-	auto dumpAttrs = [&, compass2name](std::string_view head, const auto& attrs) {
+	auto dumpAttrs = [&, compass2name](std::string head, const auto& attrs) {
 		if (attrs.empty())
 			return;
 
@@ -198,3 +198,4 @@ std::string Subgraph::Dump(bool isSub, bool isDigraph, std::size_t indent) const
 
 	return ss.str();
 }
+}  // namespace ugraphviz

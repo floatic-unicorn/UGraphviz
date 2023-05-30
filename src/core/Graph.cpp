@@ -1,12 +1,11 @@
-#include <UGraphviz/Graph.hpp>
-
-#include <UGraphviz/Registry.hpp>
+#include <ugraphviz/Graph.hpp>
+#include <ugraphviz/Registry.hpp>
 
 #include <sstream>
 
 #include <cassert>
 
-using namespace Ubpa::UGraphviz;
+namespace ugraphviz {
 
 Graph::Graph(std::string id, bool isDigraph)
 	: Subgraph{ new Registry, std::move(id) }, isDigraph{ isDigraph } {}
@@ -39,4 +38,5 @@ Graph& Graph::operator=(Graph&& g) noexcept {
 	isDigraph = g.isDigraph;
 	g.registry = nullptr;
 	return *this;
+}
 }

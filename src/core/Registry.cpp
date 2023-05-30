@@ -1,10 +1,10 @@
-#include <UGraphviz/Registry.hpp>
+#include <ugraphviz/Registry.hpp>
 
 #include <cassert>
 
-using namespace Ubpa::UGraphviz;
+namespace ugraphviz {
 
-bool Registry::IsRegisteredNode(std::string_view ID) const {
+bool Registry::IsRegisteredNode(std::string ID) const {
 	return id2idx.find(ID) != id2idx.end();
 }
 
@@ -20,20 +20,20 @@ bool Registry::IsRegisteredEdge(std::size_t lhs, std::size_t rhs) const {
 	return true;
 }
 
-bool Registry::IsRegisteredEdge(std::string_view lhsID, std::string_view rhsID) const {
+bool Registry::IsRegisteredEdge(std::string lhsID, std::string rhsID) const {
 	std::size_t lhs = GetNodeIndex(lhsID);
 	std::size_t rhs = GetNodeIndex(rhsID);
 
 	return IsRegisteredEdge(lhs, rhs);
 }
 
-std::size_t Registry::GetNodeIndex(std::string_view ID) const {
+std::size_t Registry::GetNodeIndex(std::string ID) const {
 	assert(IsRegisteredNode(ID));
 	return id2idx.find(ID)->second;
 }
 
 std::pair<Registry::DstNodeEdgeIdxMap::const_iterator, Registry::DstNodeEdgeIdxMap::const_iterator>
-Registry::GetEdgeIndexRange(std::string_view lhsID, std::string_view rhsID) const {
+Registry::GetEdgeIndexRange(std::string lhsID, std::string rhsID) const {
 	std::size_t lhs = GetNodeIndex(lhsID);
 	std::size_t rhs = GetNodeIndex(rhsID);
 	
@@ -71,12 +71,12 @@ Registry& Registry::RegisterEdgePort(std::size_t edgeIndex, Port srcPort, Port d
 	return *this;
 }
 
-Registry& Registry::UnregisterNodeAttr(std::size_t nodeIndex, std::string_view key) {
+Registry& Registry::UnregisterNodeAttr(std::size_t nodeIndex, std::string key) {
 	nodeAttrs[nodeIndex].erase(nodeAttrs[nodeIndex].find(key));
 	return *this;
 }
 
-Registry& Registry::UnregisterEdgeAttr(std::size_t edgeIndex, std::string_view key) {
+Registry& Registry::UnregisterEdgeAttr(std::size_t edgeIndex, std::string key) {
 	edgeAttrs[edgeIndex].erase(edgeAttrs[edgeIndex].find(key));
 	return *this;
 }
@@ -84,4 +84,11 @@ Registry& Registry::UnregisterEdgeAttr(std::size_t edgeIndex, std::string_view k
 Registry& Registry::UnregisterEdgePort(std::size_t edgeIndex) {
 	edgePorts.erase(edgeIndex);
 	return *this;
+}
+
+Registry& Registry::UpdateNodeAttr(std::size_t nodeIndex, std::string key, std::string value) {
+	nodeAttrs[nodeIndex][key] = std::move(value);
+	return *this;
+}
+
 }

@@ -1,6 +1,7 @@
-#pragma once
+#ifndef UGRAPHVIZ__ATTRS_HPP_
+#define UGRAPHVIZ__ATTRS_HPP_
 
-namespace Ubpa::UGraphviz {
+namespace ugraphviz {
 	constexpr const char Attrs__background[] = "_background";
 	constexpr const char Attrs_area[] = "area";
 	constexpr const char Attrs_arrowhead[] = "arrowhead";
@@ -174,3 +175,5 @@ namespace Ubpa::UGraphviz {
 	constexpr const char Attrs_xlp[] = "xlp";
 	constexpr const char Attrs_z[] = "z";
 }
+
+#endif
